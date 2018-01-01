@@ -41,8 +41,6 @@ public class Permitter {
             normalizedFutureMonth += 12;
         }
         permitMonthsAhead = normalizedFutureMonth - normalizedCurrentMonth;
-
-        System.out.println("ahead " + permitMonthsAhead + "  day: " + permitDayOfMonth);
     }
 
     private static void loadCredentials() {
@@ -50,14 +48,14 @@ public class Permitter {
             String credentials = new String(Files.readAllBytes(Paths.get("credentials")), "UTF-8");
             String[] tokens = credentials.split(",");
             if (tokens.length != 2) {
-                System.out.println("File credentials does not have format \"username,password\".");
+                System.out.println("Credentials file does not have format \"username,password\".");
                 System.exit(-1);
             }
             username = tokens[0];
             password = tokens[1];
         }
         catch (IOException e) {
-            System.out.println("File credentials does not have format \"username,password\".");
+            System.out.println("Read of credentials file failed.");
             System.exit(-1);
         }
     }
@@ -67,6 +65,7 @@ public class Permitter {
         WebDriver driver = new FirefoxDriver();
         driver.manage().window().maximize();
         driver.get("https://www.select-a-spot.com/bart/");
+        // TODO: Start using asserts. Error out if fail. Example: driver.getPageSource().contains("text");
         driver.findElement(By.id("username")).click();
         driver.findElement(By.id("username")).clear();
         driver.findElement(By.id("username")).sendKeys(username);
@@ -89,7 +88,7 @@ public class Permitter {
         driver.findElement(By.xpath("//input[@value='Next']")).click();
         driver.findElement(By.xpath("(//input[@value='Next'])[2]")).click();
         driver.findElement(By.id("conditions")).click();
-        //driver.findElement(By.id("complete_order")).click();
+        driver.findElement(By.id("complete_order")).click();
     }
 
     private static void sleep() {
