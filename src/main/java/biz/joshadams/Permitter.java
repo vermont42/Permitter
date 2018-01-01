@@ -3,11 +3,12 @@ import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.*;
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.CREATE;
 
 public class Permitter {
     private static String username;
@@ -26,12 +27,13 @@ public class Permitter {
         final int daysAhead = 60;
         LocalDate currentDate = LocalDate.now();
         LocalDate futureDate = currentDate.plusDays(daysAhead);
+        log("\nOn " + currentDate + ", Permitter attempted to reserve a permit for " + futureDate + ".");
         DayOfWeek futureDayOfWeek = futureDate.getDayOfWeek();
         if (futureDayOfWeek == DayOfWeek.SATURDAY || futureDayOfWeek == DayOfWeek.SUNDAY) {
-            System.out.println("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
+            log("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
             System.exit(0);
         }
-        // TODO: If futureDate is a holiday, exit without purchasing.
+        // TODO: If futureDate is a holiday or planned-vacation day, exit without purchasing.
         permitDayOfMonth = futureDate.getDayOfMonth();
         int normalizedCurrentMonth = currentDate.getMonthValue();
         int normalizedFutureMonth = futureDate.getMonthValue();
@@ -49,14 +51,14 @@ public class Permitter {
             String credentials = new String(Files.readAllBytes(Paths.get("credentials")), "UTF-8");
             String[] tokens = credentials.split(",");
             if (tokens.length != 2) {
-                System.out.println("Credentials file does not have format \"username,password\".");
+                log("Credentials file does not have format \"username,password\".");
                 System.exit(-1);
             }
             username = tokens[0];
             password = tokens[1];
         }
         catch (IOException e) {
-            System.out.println("Read of credentials file failed.");
+            log("Read of credentials file failed.");
             System.exit(-1);
         }
     }
@@ -76,9 +78,10 @@ public class Permitter {
         driver.findElement(By.id("submit")).click();
         verify("Logged in as", "Login failed.");
         driver.findElement(By.linkText("Select")).click();
-        verify("STEP ONE - Choose Your BART Station", "Station-selection-page load filed.");
-        driver.findElement(By.id("type_id_37")).click(); // 34: RockRidge  37: Orinda
+        verify("STEP ONE - Choose Your BART Station", "Station-selection-page load failed.");
+        driver.findElement(By.id("type_id_34")).click(); // 34: RockRidge  37: Orinda
         driver.findElement(By.xpath("//input[@value='Next']")).click();
+        verify("STEP TWO - Choose Your Parking Dates", "Date-selection-page load failed.");
         for (int i = 0; i < permitMonthsAhead; i++) {
             driver.findElement(By.xpath("//a[2]/span")).click();
         }
@@ -88,17 +91,33 @@ public class Permitter {
         }
         driver.findElement(By.xpath("(//a[text() = '" + permitDayOfMonth + "'])[2]")).click();
         driver.findElement(By.xpath("//input[@value='Next']")).click();
+        verify("STEP THREE - Checkout", "First part of checkout-page load failed.");
         driver.findElement(By.xpath("//input[@value='Next']")).click();
+        verify("Payment Information", "Second part of checkout-page load failed.");
         driver.findElement(By.xpath("(//input[@value='Next'])[2]")).click();
+        verify("Terms and Conditions", "Terms-and-conditions-page load failed.");
         driver.findElement(By.id("conditions")).click();
         driver.findElement(By.id("complete_order")).click();
+        verify("You have successfully reserved the space", "Confirmation-page load failed.");
         driver.close();
+        log("Reservation succeeded.");
     }
 
     private static void verify(String pattern, String message) {
         if (!driver.getPageSource().contains(pattern)) {
-            System.out.println(message + "\n" + "Page did not contain the text \"" + pattern + "\".");
+            log(message + "\n" + "Page did not contain the text \"" + pattern + "\".");
             driver.close();
+            System.exit(-1);
+        }
+    }
+
+    private static void log(String message) {
+        String filePath = "logfile.txt";
+        String messageWithNewline = message + "\n";
+        try {
+            Files.write(Paths.get(filePath), messageWithNewline.getBytes(), APPEND, CREATE);
+        } catch (IOException e) {
+            System.out.println("Failed to write to " + filePath + ".");
             System.exit(-1);
         }
     }
@@ -108,7 +127,7 @@ public class Permitter {
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
-            System.out.println("Thread.sleep() was interrupted.");
+            log("Thread.sleep() was interrupted.");
             System.exit(-1);
         }
     }

@@ -1,6 +1,9 @@
 # Credentials file
 credentials
 
+# Log file
+logfile.txt
+
 # Compiled class file
 *.class
 
