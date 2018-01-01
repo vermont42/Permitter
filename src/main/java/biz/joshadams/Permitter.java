@@ -14,6 +14,7 @@ public class Permitter {
     private static String password;
     private static int permitMonthsAhead;
     private static int permitDayOfMonth;
+    private static WebDriver driver;
 
     public static void main(String[] args) {
         setupTime();
@@ -62,10 +63,10 @@ public class Permitter {
 
     private static void getPermit() {
         System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + File.separator + "geckodriver");
-        WebDriver driver = new FirefoxDriver();
+        driver = new FirefoxDriver();
         driver.manage().window().maximize();
         driver.get("https://www.select-a-spot.com/bart/");
-        // TODO: Start using asserts. Error out if fail. Example: driver.getPageSource().contains("text");
+        verify("Single Day Reserved", "Initial-page load failed.");
         driver.findElement(By.id("username")).click();
         driver.findElement(By.id("username")).clear();
         driver.findElement(By.id("username")).sendKeys(username);
@@ -73,7 +74,9 @@ public class Permitter {
         driver.findElement(By.id("password")).clear();
         driver.findElement(By.id("password")).sendKeys(password);
         driver.findElement(By.id("submit")).click();
+        verify("Logged in as", "Login failed.");
         driver.findElement(By.linkText("Select")).click();
+        verify("STEP ONE - Choose Your BART Station", "Station-selection-page load filed.");
         driver.findElement(By.id("type_id_37")).click(); // 34: RockRidge  37: Orinda
         driver.findElement(By.xpath("//input[@value='Next']")).click();
         for (int i = 0; i < permitMonthsAhead; i++) {
@@ -89,6 +92,15 @@ public class Permitter {
         driver.findElement(By.xpath("(//input[@value='Next'])[2]")).click();
         driver.findElement(By.id("conditions")).click();
         driver.findElement(By.id("complete_order")).click();
+        driver.close();
+    }
+
+    private static void verify(String pattern, String message) {
+        if (!driver.getPageSource().contains(pattern)) {
+            System.out.println(message + "\n" + "Page did not contain the text \"" + pattern + "\".");
+            driver.close();
+            System.exit(-1);
+        }
     }
 
     private static void sleep() {
