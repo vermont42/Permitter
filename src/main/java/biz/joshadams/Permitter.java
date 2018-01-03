@@ -91,7 +91,7 @@ public class Permitter {
         }
         driver.findElement(By.xpath("(//a[text() = '" + permitDayOfMonth + "'])[2]")).click();
         driver.findElement(By.xpath("//input[@value='Next']")).click();
-        verify("STEP THREE - Checkout", "First part of checkout-page load failed.");
+        verify("STEP THREE - Checkout", "Checkout-page load failed because permit was not available.");
         driver.findElement(By.xpath("//input[@value='Next']")).click();
         verify("Payment Information", "Second part of checkout-page load failed.");
         driver.findElement(By.xpath("(//input[@value='Next'])[2]")).click();
@@ -114,6 +114,7 @@ public class Permitter {
     private static void log(String message) {
         String filePath = "logfile.txt";
         String messageWithNewline = message + "\n";
+        System.out.println(message);
         try {
             Files.write(Paths.get(filePath), messageWithNewline.getBytes(), APPEND, CREATE);
         } catch (IOException e) {
@@ -123,7 +124,7 @@ public class Permitter {
     }
 
     private static void sleep() {
-        Long sleepTime = 2000L;
+        Long sleepTime = 10000L;
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
