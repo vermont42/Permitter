@@ -79,7 +79,7 @@ public class Permitter {
         verify("Logged in as", "Login failed.");
         driver.findElement(By.linkText("Select")).click();
         verify("STEP ONE - Choose Your BART Station", "Station-selection-page load failed.");
-        driver.findElement(By.id("type_id_34")).click(); // 34: RockRidge  37: Orinda
+        driver.findElement(By.id("type_id_37")).click(); // 34: RockRidge  37: Orinda
         driver.findElement(By.xpath("//input[@value='Next']")).click();
         verify("STEP TWO - Choose Your Parking Dates", "Date-selection-page load failed.");
         for (int i = 0; i < permitMonthsAhead; i++) {
