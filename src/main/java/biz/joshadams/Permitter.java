@@ -27,13 +27,13 @@ public class Permitter {
         final int daysAhead = 60;
         LocalDate currentDate = LocalDate.now();
         LocalDate futureDate = currentDate.plusDays(daysAhead);
-        log("\nOn " + currentDate + ", Permitter attempted to reserve a permit for " + futureDate + ".");
+        log(System.getProperty("line.separator") + "On " + currentDate + ", Permitter attempted to reserve a permit for " + futureDate + ".");
         DayOfWeek futureDayOfWeek = futureDate.getDayOfWeek();
         if (futureDayOfWeek == DayOfWeek.SATURDAY || futureDayOfWeek == DayOfWeek.SUNDAY) {
             log("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
             System.exit(0);
         }
-        // TODO: If futureDate is a holiday or planned-vacation day, exit without purchasing.
+// TODO: If futureDate is a holiday or planned-vacation day, exit without purchasing.
         permitDayOfMonth = futureDate.getDayOfMonth();
         int normalizedCurrentMonth = currentDate.getMonthValue();
         int normalizedFutureMonth = futureDate.getMonthValue();
@@ -79,7 +79,7 @@ public class Permitter {
         verify("Logged in as", "Login failed.");
         driver.findElement(By.linkText("Select")).click();
         verify("STEP ONE - Choose Your BART Station", "Station-selection-page load failed.");
-        driver.findElement(By.id("type_id_37")).click(); // 34: RockRidge  37: Orinda
+        driver.findElement(By.id("type_id_37")).click(); // 34: RockRidge 37: Orinda
         driver.findElement(By.xpath("//input[@value='Next']")).click();
         verify("STEP TWO - Choose Your Parking Dates", "Date-selection-page load failed.");
         for (int i = 0; i < permitMonthsAhead; i++) {
@@ -105,7 +105,7 @@ public class Permitter {
 
     private static void verify(String pattern, String message) {
         if (!driver.getPageSource().contains(pattern)) {
-            log(message + "\n" + "Page did not contain the text \"" + pattern + "\".");
+            log(message + System.getProperty("line.separator") + "Page did not contain the text \"" + pattern + "\".");
             driver.close();
             System.exit(-1);
         }
@@ -113,7 +113,7 @@ public class Permitter {
 
     private static void log(String message) {
         String filePath = "logfile.txt";
-        String messageWithNewline = message + "\n";
+        String messageWithNewline = message + System.getProperty("line.separator");
         System.out.println(message);
         try {
             Files.write(Paths.get(filePath), messageWithNewline.getBytes(), APPEND, CREATE);
