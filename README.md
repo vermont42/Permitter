@@ -7,7 +7,7 @@ Permitter
 [![license](https://img.shields.io/github/license/mashape/apistatus.svg)]()
 [![cat](https://img.shields.io/badge/cat-friendly-blue.svg)](https://twitter.com/vermont42/status/784504585243078656)
 
-<a href="url"><img src="BART.gif" align="center" height="200"></a>
+<a href="url"><img src="BART.gif" align="center" height="300"></a>
 <br />
 
 ### Introduction
