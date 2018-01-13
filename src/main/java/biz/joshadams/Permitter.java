@@ -34,7 +34,7 @@ public class Permitter {
             log("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
             System.exit(0);
         }
-// TODO: If futureDate is a holiday or planned-vacation day, exit without purchasing.
+        // TODO: If futureDate is a holiday or planned-vacation day, exit without purchasing.
         permitDayOfMonth = futureDate.getDayOfMonth();
         int normalizedCurrentMonth = currentDate.getMonthValue();
         int normalizedFutureMonth = futureDate.getMonthValue();
