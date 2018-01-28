@@ -14,8 +14,8 @@ import java.time.LocalDate;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 
 public class ExclusionHandler extends DefaultHandler {
-    private List<LocalDate> holidays = null;
-    private List<Vacation> vacations = null;
+    private List<LocalDate> holidays = new ArrayList<>();
+    private List<Vacation> vacations = new ArrayList<>();
 
     public List<LocalDate> getHolidays() {
         return holidays;
@@ -31,17 +31,12 @@ public class ExclusionHandler extends DefaultHandler {
             SAXParser saxParser = saxParserFactory.newSAXParser();
             saxParser.parse(new File("exclude.xml"), this);
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            Logger.log("XML-parsing failed.");
-            System.exit(-1);
+            Logger.log("Parsing of exclude.xml failed.");
         }
-
     }
 
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        if (qName.equalsIgnoreCase("exclusions")) {
-            holidays = new ArrayList<>();
-            vacations = new ArrayList<>();
-        } else if (qName.equalsIgnoreCase("holiday")) {
+        if (qName.equalsIgnoreCase("holiday")) {
             String holidayString = attributes.getValue("date");
             LocalDate holiday;
             try {

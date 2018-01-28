@@ -18,9 +18,19 @@ There is a full [video](https://vimeo.com/250967769) of Permitter in action.
 
 Although I developed Permitter on my MacBook Pro, I run this app on my Windows PC using Task Scheduler.
 
+### Use
+
+*Permitter.java* has the *main* method.
+
+Permitter requires a credentials file called *credentials*. This file should have a BART-parking username and password with the format *username,password*.
+
+Permitter can exclude holidays and vacations from purchase. See *exclude.xml* for how.
+
+Permitter's repo has the MacOS Firefox Selenium WebDriver, *geckodriver*, but for other operating systems or browsers, use a different driver.
+
 ### Technical Notes
 
-The Safari Selenium WebDriver did not work, so I used the Firefox WebDriver.
+The Safari Selenium WebDriver did not work for me, which is why I used the Firefox Selenium WebDriver.
 
 In my initial efforts to solve the purchasing problem, I tried [Permitter](https://github.com/jeffkowalski/permitter), a Ruby app. I ultimately decided to implement something else because I am not fond of Ruby's syntax. That said, I thank [Permitter](https://github.com/jeffkowalski/permitter)'s developer, Jeff Kowalski, for demonstrating that this automation is possible.
 
@@ -28,8 +38,6 @@ As a Swift developer, I was inclined to use [WKZombie](https://github.com/mkoehn
 
 ### Future Plans
 
-Parking permits are expensive, and I would prefer not to buy them for days I don't need them, for example planned vacations. I plan to implement a configuration file, perhaps using XML, to specify dates not to buy parking permits.
-
-The credentials-reading code assumes that the credentials do not contain a comma. A more-general solution would have been to use something like JSON, XML, or YAML, as [Permitter](https://github.com/jeffkowalski/permitter) does. But this would have been overkill in my case because my wife's credentials do not contain a comma. That said, after I implement the configuration file, I might store the credentials in the same format.
+The credentials-reading code assumes that the credentials do not contain a comma. If my wife's credentials ever gain a comma, I might use XML for the credentials file, which would allow a comma.
 
 Results of attempts to purchase permits currently go to a log file. Successfully purchased permits are also stored in BART's backend. For more-timely notice of results, however, I would like to send a push notification.
