@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<exclusions>
+    <holiday date="2018-01-01" />
+    <holiday date="2018-05-28" />
+    <holiday date="2018-07-04" />
+    <holiday date="2018-09-03" />
+    <holiday date="2018-11-22" />
+    <holiday date="2018-11-23" />
+    <holiday date="2018-12-25" />
+    <vacation start="2018-05-11" end="2018-05-25" />
+    <vacation start="2018-10-01" end="2018-10-12" />
+</exclusions>

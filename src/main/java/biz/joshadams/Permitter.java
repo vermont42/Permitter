@@ -8,33 +8,56 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.DayOfWeek;
-import static java.nio.file.StandardOpenOption.APPEND;
-import static java.nio.file.StandardOpenOption.CREATE;
+import java.util.List;
 
 public class Permitter {
+    private static WebDriver driver;
     private static String username;
     private static String password;
     private static int permitMonthsAhead;
     private static int permitDayOfMonth;
-    private static WebDriver driver;
+    private static List<LocalDate> holidays = null;
+    private static List<Vacation> vacations = null;
 
     public static void main(String[] args) {
+        loadExclusions();
         setupTime();
         loadCredentials();
         getPermit();
+    }
+
+    private static void loadExclusions() {
+        ExclusionHandler handler = new ExclusionHandler();
+        handler.parse();
+        vacations = handler.getVacations();
+        holidays = handler.getHolidays();
     }
 
     private static void setupTime() {
         final int daysAhead = 60;
         LocalDate currentDate = LocalDate.now();
         LocalDate futureDate = currentDate.plusDays(daysAhead);
-        log(System.getProperty("line.separator") + "On " + currentDate + ", Permitter attempted to reserve a permit for " + futureDate + ".");
+        Logger.log(System.getProperty("line.separator") + "On " + currentDate + ", Permitter attempted to reserve a permit for " + futureDate + ".");
         DayOfWeek futureDayOfWeek = futureDate.getDayOfWeek();
         if (futureDayOfWeek == DayOfWeek.SATURDAY || futureDayOfWeek == DayOfWeek.SUNDAY) {
-            log("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
+            Logger.log("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
             System.exit(0);
         }
-        // TODO: If futureDate is a holiday or planned-vacation day, exit without purchasing.
+        for (LocalDate holiday : holidays) {
+            if (holiday.equals(futureDate)) {
+                Logger.log("Did not purchase permit because " + holiday + " is a holiday.");
+                System.exit(0);
+            }
+        }
+        for (Vacation vacation : vacations) {
+            LocalDate start = vacation.getStart();
+            LocalDate end = vacation.getEnd();
+            Boolean isDuring = start.equals(futureDate) || end.equals(futureDate) || (futureDate.isAfter(start) && futureDate.isBefore(end));
+            if (isDuring) {
+                Logger.log("Did not purchase permit because " + futureDate + " is during a vacation.");
+                System.exit(0);
+            }
+        }
         permitDayOfMonth = futureDate.getDayOfMonth();
         int normalizedCurrentMonth = currentDate.getMonthValue();
         int normalizedFutureMonth = futureDate.getMonthValue();
@@ -52,14 +75,14 @@ public class Permitter {
             String credentials = new String(Files.readAllBytes(Paths.get("credentials")), "UTF-8");
             String[] tokens = credentials.split(",");
             if (tokens.length != 2) {
-                log("Credentials file does not have format \"username,password\".");
+                Logger.log("Credentials file does not have format \"username,password\".");
                 System.exit(-1);
             }
             username = tokens[0];
             password = tokens[1];
         }
         catch (IOException e) {
-            log("Read of credentials file failed.");
+            Logger.log("Read of credentials file failed.");
             System.exit(-1);
         }
     }
@@ -101,25 +124,13 @@ public class Permitter {
         driver.findElement(By.id("complete_order")).click();
         verify("You have successfully reserved the space", "Confirmation-page load failed.");
         driver.close();
-        log("Reservation succeeded.");
+        Logger.log("Reservation succeeded.");
     }
 
     private static void verify(String pattern, String message) {
         if (!driver.getPageSource().contains(pattern)) {
-            log(message + System.getProperty("line.separator") + "Page did not contain the text \"" + pattern + "\".");
+            Logger.log(message + System.getProperty("line.separator") + "Page did not contain the text \"" + pattern + "\".");
             driver.close();
-            System.exit(-1);
-        }
-    }
-
-    private static void log(String message) {
-        String filePath = "logfile.txt";
-        String messageWithNewline = message + System.getProperty("line.separator");
-        System.out.println(message);
-        try {
-            Files.write(Paths.get(filePath), messageWithNewline.getBytes(), APPEND, CREATE);
-        } catch (IOException e) {
-            System.out.println("Failed to write to " + filePath + ".");
             System.exit(-1);
         }
     }
@@ -129,7 +140,7 @@ public class Permitter {
         try {
             Thread.sleep(sleepTime);
         } catch (InterruptedException e) {
-            log("Thread.sleep() was interrupted.");
+            Logger.log("Thread.sleep() was interrupted.");
             System.exit(-1);
         }
     }
