@@ -20,17 +20,9 @@ public class Permitter {
     private static List<Vacation> vacations = null;
 
     public static void main(String[] args) {
-        loadExclusions();
         setupTime();
         loadCredentials();
         getPermit();
-    }
-
-    private static void loadExclusions() {
-        ExclusionHandler handler = new ExclusionHandler();
-        handler.parse();
-        vacations = handler.getVacations();
-        holidays = handler.getHolidays();
     }
 
     private static void setupTime() {
@@ -38,6 +30,7 @@ public class Permitter {
         LocalDate currentDate = LocalDate.now();
         LocalDate futureDate = currentDate.plusDays(daysAhead);
         Logger.log(System.getProperty("line.separator") + "On " + currentDate + ", Permitter attempted to reserve a permit for " + futureDate + ".");
+        loadExclusions();
         DayOfWeek futureDayOfWeek = futureDate.getDayOfWeek();
         if (futureDayOfWeek == DayOfWeek.SATURDAY || futureDayOfWeek == DayOfWeek.SUNDAY) {
             Logger.log("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
@@ -70,6 +63,13 @@ public class Permitter {
         permitMonthsAhead = normalizedFutureMonth - normalizedCurrentMonth;
     }
 
+    private static void loadExclusions() {
+        ExclusionHandler handler = new ExclusionHandler();
+        handler.parse();
+        vacations = handler.getVacations();
+        holidays = handler.getHolidays();
+    }
+    
     private static void loadCredentials() {
         try {
             String credentials = new String(Files.readAllBytes(Paths.get("credentials")), "UTF-8");
