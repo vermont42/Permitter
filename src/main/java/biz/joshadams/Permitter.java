@@ -30,12 +30,12 @@ public class Permitter {
         LocalDate currentDate = LocalDate.now();
         LocalDate futureDate = currentDate.plusDays(daysAhead);
         Logger.log(System.getProperty("line.separator") + "On " + currentDate + ", Permitter attempted to reserve a permit for " + futureDate + ".");
-        loadExclusions();
         DayOfWeek futureDayOfWeek = futureDate.getDayOfWeek();
         if (futureDayOfWeek == DayOfWeek.SATURDAY || futureDayOfWeek == DayOfWeek.SUNDAY) {
             Logger.log("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
             System.exit(0);
         }
+        loadExclusions();
         for (LocalDate holiday : holidays) {
             if (holiday.equals(futureDate)) {
                 Logger.log("Did not purchase permit because " + holiday + " is a holiday.");
@@ -69,7 +69,7 @@ public class Permitter {
         vacations = handler.getVacations();
         holidays = handler.getHolidays();
     }
-    
+
     private static void loadCredentials() {
         try {
             String credentials = new String(Files.readAllBytes(Paths.get("credentials")), "UTF-8");
