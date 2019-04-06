@@ -12,25 +12,37 @@ Permitter
 
 ### Introduction
 
-Parking permits for the Orinda BART parking lot sell out sixty days in advance, by 7:00 AM. To automate interacting with the permit-purchasing website, I made Permitter. Technologies used include Java, IntelliJ, Selenium WebDriver, and Katalon Automation Recorder.
+Parking permits for the Orinda BART parking lot sell out sixty days in advance, by 7:00 AM. In early 2018, I developed Permitter on a now-retired [MacBook Pro](https://motherboard.vice.com/en_us/article/53db3a/the-2012-non-retina-macbook-pro-is-still-the-best-laptop-apple-sells) to automate parking-permit purchases for my wife. (I get to the lot at 6:50 AM and therefore don't need a permit.) Since that time, I have run Permitter daily on my [Windows PC](https://www.intel.com/content/www/us/en/products/boards-kits/nuc.html) using [Task Scheduler](https://docs.microsoft.com/en-us/windows/desktop/taskschd/task-scheduler-start-page). Five days a week, new permits magically appear in her Select-a-Spot account.
 
-There is a full [video](https://vimeo.com/250967769) of Permitter in action.
+The Permitter stack includes Java, IntelliJ, Selenium WebDriver, and Firefox. I used [Katalon Automation Recorder](https://www.katalon.com/resources-center/blog/katalon-automation-recorder/) to observe interactions with the parking-website DOM. I strongly endorse that product.
 
-Although I developed Permitter on my MacBook Pro, I run this app on my Windows PC using Task Scheduler.
+Enjoy a [video](https://vimeo.com/250967769) of Permitter in action.
 
 ### Use
-
-*Permitter.java* has the *main* method.
 
 Permitter requires a credentials file called *credentials*. This file should have a BART-parking username and password with the format *username,password*.
 
 Permitter can exclude holidays and vacations from purchase. See *exclude.xml* for how.
 
-Permitter's repo has the MacOS Firefox Selenium WebDriver, *geckodriver*, but for other operating systems or browsers, use a different driver.
+Permitter's repo has the MacOS Firefox Selenium WebDriver, *geckodriver*, but for other operating systems or browsers, use the appropriate driver.
+
+If you are running on Windows, replace the string `geckodriver` in `Permitter.java` with `geckodriver.exe`.
+
+As of April 6, 2019, Permitter is known to work with the following versions:
+
+* IntelliJ IDEA: 2019.1
+* JDK: 8, Update 201
+* Selenium WebDriver for Java: 3.141.59
+* geckodriver: 0.24.0
+* MacOS: 10.14.4
+* Windows: 10.0.17763.404
+* Firefox: 66.0.2
 
 ### Technical Notes
 
-The Safari Selenium WebDriver did not work for me, which is why I used the Firefox Selenium WebDriver.
+`Permitter.java` has the `main` method.
+
+The Safari and Chrome Selenium WebDrivers did not work for me, which is why I used the Firefox Selenium WebDriver. YMMV.
 
 In my initial efforts to solve the purchasing problem, I tried [Permitter](https://github.com/jeffkowalski/permitter), a Ruby app. I ultimately decided to implement something else because I am not fond of Ruby's syntax. That said, I thank [Permitter](https://github.com/jeffkowalski/permitter)'s developer, Jeff Kowalski, for demonstrating that this automation is possible.
 
