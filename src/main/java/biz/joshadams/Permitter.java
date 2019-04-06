@@ -123,6 +123,7 @@ public class Permitter {
         driver.findElement(By.id("conditions")).click();
         driver.findElement(By.id("complete_order")).click();
         verify("You have successfully reserved the space", "Confirmation-page load failed.");
+        verify("You have successfully obtained a parking permit/pass", "Confirmation-page load failed.");
         driver.close();
         Logger.log("Reservation succeeded.");
     }
