@@ -20,18 +20,16 @@ Enjoy a [video](https://vimeo.com/250967769) of Permitter in action.
 
 ### Use
 
-Permitter requires a credentials file called *credentials*. This file should have a BART-parking username and password with the format *username,password*.
+Permitter requires a credentials file called `credentials` by default. This file should have a BART-parking username and password with the format `username,password`.
 
-Permitter can exclude holidays, vacations, and particular days of the week from purchase. See *exclude.xml* for how.
+Permitter can exclude holidays, vacations, and particular days of the week from purchase. See `exclude.xml` for how.[^1] You should modify or delete that file before running Permitter, as you probably don't want the exclusions currently in `exclude.xml`.
 
 Permitter has three optional launch arguments:
 * `credentialsFile=VALUE`: the file to get credentials from; default value: `credentials`
 * `logFile=VALUE`: the file to log output to; default value: `logfile.txt`
 * `excludeFile=VALUE`: the file to get exclusions from; default value: `exclusions.xml`
 
-Permitter's repo has the MacOS Firefox Selenium WebDriver, *geckodriver*, but for other operating systems or browsers, use the appropriate driver.
-
-If you are running on Windows, replace the string `geckodriver` in `Permitter.java` with `geckodriver.exe`.
+Permitter's repo has the MacOS Firefox Selenium WebDriver, `geckodriver`, but for other operating systems or browsers, use the appropriate driver. For example, if you are running Firefox on Windows, replace the string `geckodriver` in `Permitter.java` with `geckodriver.exe`.
 
 As of April 6, 2019, Permitter is known to work with the following versions:
 
@@ -58,3 +56,5 @@ As a Swift developer, I was inclined to use [WKZombie](https://github.com/mkoehn
 The credentials-reading code assumes that the credentials do not contain a comma. If my wife's credentials ever gain a comma, I might use XML for the credentials file, which would allow a comma.
 
 Results of attempts to purchase permits currently go to a log file. Successfully purchased permits are also stored in BART's backend. For more-timely notice of results, however, I would like to send a push notification.
+
+[^1]: Though I am comfortable with JSON, I prefer the verbosity of XML.
