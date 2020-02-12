@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.time.DayOfWeek;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Permitter {
@@ -18,11 +19,44 @@ public class Permitter {
     private static int permitDayOfMonth;
     private static List<LocalDate> holidays = null;
     private static List<Vacation> vacations = null;
+    private static List<DayOfWeek> skipDays = null;
+    private static String credentialsFilename = "credentials";
+    private static String logFilename = "logfile.txt";
+    private static String exclusionsFilename = "exclude.xml";
 
     public static void main(String[] args) {
+        readLaunchArguments(args);
         setupTime();
         loadCredentials();
         getPermit();
+    }
+
+    private static void readLaunchArguments(String[] args) {
+        String credentialsFileArgumentName = "credentialsFile";
+        String logFileArgumentName = "logFile";
+        String excludeFileArgumentName = "excludeFile";
+        List<String> errors = new ArrayList<>();
+
+        for (String arg : args) {
+            if (!arg.contains("=")) {
+                errors.add("Argument contains no =: " + arg);
+            } else if (arg.startsWith(credentialsFileArgumentName + "=")) {
+                credentialsFilename = arg.substring(credentialsFileArgumentName.length() + 1, arg.length());
+            } else if (arg.startsWith(logFileArgumentName + "=")) {
+                logFilename = arg.substring(logFileArgumentName.length() + 1, arg.length());
+            } else if (arg.startsWith(excludeFileArgumentName + "=")) {
+                exclusionsFilename = arg.substring(excludeFileArgumentName.length() + 1, arg.length());
+            } else {
+                errors.add("Unsupported argument: " + arg);
+            }
+        }
+
+        ExclusionHandler.setFilePath(exclusionsFilename);
+
+        Logger.setFilePath(logFilename);
+        for (String error: errors) {
+            Logger.log(error);
+        }
     }
 
     private static void setupTime() {
@@ -30,18 +64,29 @@ public class Permitter {
         LocalDate currentDate = LocalDate.now();
         LocalDate futureDate = currentDate.plusDays(daysAhead);
         Logger.log(System.getProperty("line.separator") + "On " + currentDate + ", Permitter attempted to reserve a permit for " + futureDate + ".");
+
         DayOfWeek futureDayOfWeek = futureDate.getDayOfWeek();
         if (futureDayOfWeek == DayOfWeek.SATURDAY || futureDayOfWeek == DayOfWeek.SUNDAY) {
-            Logger.log("Did not purchase permit because " + daysAhead + " from now is on a weekend.");
+            Logger.log("Did not purchase permit because " + daysAhead + " days from now is on a weekend.");
             System.exit(0);
         }
+
         loadExclusions();
+
+        for (DayOfWeek skipDay : skipDays) {
+            if (futureDayOfWeek == skipDay) {
+                Logger.log("Did not purchase permit because " + daysAhead + " days from now is on a " + skipDay + ", which is excluded.");
+                System.exit(0);
+            }
+        }
+
         for (LocalDate holiday : holidays) {
             if (holiday.equals(futureDate)) {
                 Logger.log("Did not purchase permit because " + holiday + " is a holiday.");
                 System.exit(0);
             }
         }
+
         for (Vacation vacation : vacations) {
             LocalDate start = vacation.getStart();
             LocalDate end = vacation.getEnd();
@@ -51,6 +96,7 @@ public class Permitter {
                 System.exit(0);
             }
         }
+
         permitDayOfMonth = futureDate.getDayOfMonth();
         int normalizedCurrentMonth = currentDate.getMonthValue();
         int normalizedFutureMonth = futureDate.getMonthValue();
@@ -68,11 +114,12 @@ public class Permitter {
         handler.parse();
         vacations = handler.getVacations();
         holidays = handler.getHolidays();
+        skipDays = handler.getSkipDays();
     }
 
     private static void loadCredentials() {
         try {
-            String credentials = new String(Files.readAllBytes(Paths.get("credentials")), "UTF-8");
+            String credentials = new String(Files.readAllBytes(Paths.get(credentialsFilename)), "UTF-8");
             String[] tokens = credentials.split(",");
             if (tokens.length != 2) {
                 Logger.log("Credentials file does not have format \"username,password\".");

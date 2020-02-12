@@ -22,7 +22,12 @@ Enjoy a [video](https://vimeo.com/250967769) of Permitter in action.
 
 Permitter requires a credentials file called *credentials*. This file should have a BART-parking username and password with the format *username,password*.
 
-Permitter can exclude holidays and vacations from purchase. See *exclude.xml* for how.
+Permitter can exclude holidays, vacations, and particular days of the week from purchase. See *exclude.xml* for how.
+
+Permitter has three optional launch arguments:
+* `credentialsFile=VALUE`: the file to get credentials from; default value: `credentials`
+* `logFile=VALUE`: the file to log output to; default value: `logfile.txt`
+* `excludeFile=VALUE`: the file to get exclusions from; default value: `exclusions.xml`
 
 Permitter's repo has the MacOS Firefox Selenium WebDriver, *geckodriver*, but for other operating systems or browsers, use the appropriate driver.
 

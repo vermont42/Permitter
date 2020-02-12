@@ -6,8 +6,13 @@ import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.CREATE;
 
 public class Logger {
+    private static String filePath;
+
+    public static void setFilePath(String path) {
+        filePath = path;
+    }
+
     public static void log(String message) {
-        String filePath = "logfile.txt";
         String messageWithNewline = message + System.getProperty("line.separator");
         System.out.println(message);
         try {

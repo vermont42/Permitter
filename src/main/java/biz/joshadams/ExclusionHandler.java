@@ -1,6 +1,7 @@
 package biz.joshadams;
 import java.io.File;
 import java.io.IOException;
+import java.time.DayOfWeek;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,6 +17,12 @@ import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 public class ExclusionHandler extends DefaultHandler {
     private List<LocalDate> holidays = new ArrayList<>();
     private List<Vacation> vacations = new ArrayList<>();
+    private List<DayOfWeek> skipDays = new ArrayList<>();
+    private static String filePath;
+
+    public static void setFilePath(String path) {
+        filePath = path;
+    }
 
     public List<LocalDate> getHolidays() {
         return holidays;
@@ -25,13 +32,17 @@ public class ExclusionHandler extends DefaultHandler {
         return vacations;
     }
 
+    public List<DayOfWeek> getSkipDays() {
+        return skipDays;
+    }
+
     public void parse() {
         SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
         try {
             SAXParser saxParser = saxParserFactory.newSAXParser();
-            saxParser.parse(new File("exclude.xml"), this);
+            saxParser.parse(new File(filePath), this);
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            Logger.log("Parsing of exclude.xml failed.");
+            Logger.log("Parsing of " + filePath + " failed.");
         }
     }
 
@@ -67,6 +78,20 @@ public class ExclusionHandler extends DefaultHandler {
                 System.exit(-1);
             }
             vacations.add(new Vacation(start, end));
+        } else if (qName.equalsIgnoreCase("skip")) {
+            String dayString = attributes.getValue("dayOfWeek");
+
+            if (dayString.equalsIgnoreCase("Monday")) {
+                skipDays.add(DayOfWeek.MONDAY);
+            } else if (dayString.equalsIgnoreCase("Tuesday")) {
+                skipDays.add(DayOfWeek.TUESDAY);
+            } else if (dayString.equalsIgnoreCase("Wednesday")) {
+                skipDays.add(DayOfWeek.WEDNESDAY);
+            } else if (dayString.equalsIgnoreCase("Thursday")) {
+                skipDays.add(DayOfWeek.THURSDAY);
+            } else if (dayString.equalsIgnoreCase("Friday")) {
+                skipDays.add(DayOfWeek.FRIDAY);
+            }
         }
     }
 }

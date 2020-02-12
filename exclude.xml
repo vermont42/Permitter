@@ -9,4 +9,5 @@
     <holiday date="2018-12-25" />
     <vacation start="2018-05-11" end="2018-05-25" />
     <vacation start="2018-10-01" end="2018-10-12" />
+    <skip dayOfWeek="wednesday" />
 </exclusions>
