@@ -22,7 +22,7 @@ Enjoy a [video](https://vimeo.com/250967769) of Permitter in action.
 
 Permitter requires a credentials file called `credentials` by default. This file should have a BART-parking username and password with the format `username,password`.
 
-Permitter can exclude holidays, vacations, and particular days of the week from purchase. See `exclude.xml` for how.[^1] You should modify or delete that file before running Permitter, as you probably don't want the exclusions currently in `exclude.xml`.
+Permitter can exclude holidays, vacations, and particular days of the week from purchase. See `exclude.xml` for how. (Though I am comfortable with JSON, I prefer the verbosity of XML.) You should modify or delete that file before running Permitter, as you probably don't want the exclusions currently in `exclude.xml`.
 
 Permitter has three optional launch arguments:
 * `credentialsFile=VALUE`: the file to get credentials from; default value: `credentials`
@@ -56,5 +56,3 @@ As a Swift developer, I was inclined to use [WKZombie](https://github.com/mkoehn
 The credentials-reading code assumes that the credentials do not contain a comma. If my wife's credentials ever gain a comma, I might use XML for the credentials file, which would allow a comma.
 
 Results of attempts to purchase permits currently go to a log file. Successfully purchased permits are also stored in BART's backend. For more-timely notice of results, however, I would like to send a push notification.
-
-[^1]: Though I am comfortable with JSON, I prefer the verbosity of XML.
