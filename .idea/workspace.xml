@@ -6,13 +6,7 @@
     </artifacts-to-build>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="232d1d8a-11f6-4b9d-8f3b-153489d8a377" name="Default" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/exclude.xml" beforeDir="false" afterPath="$PROJECT_DIR$/exclude.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/biz/joshadams/ExclusionHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/biz/joshadams/ExclusionHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/biz/joshadams/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/biz/joshadams/Logger.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/biz/joshadams/Permitter.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/biz/joshadams/Permitter.java" afterDir="false" />
-    </list>
+    <list default="true" id="232d1d8a-11f6-4b9d-8f3b-153489d8a377" name="Default" comment="" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
