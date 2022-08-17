@@ -12,7 +12,7 @@ Permitter
 
 ### Introduction
 
-Parking permits for the Orinda BART parking lot sell out sixty days in advance, by 7:00 AM. In early 2018, I developed Permitter on a now-retired [MacBook Pro](https://motherboard.vice.com/en_us/article/53db3a/the-2012-non-retina-macbook-pro-is-still-the-best-laptop-apple-sells) to automate parking-permit purchases for my wife. (I get to the lot at 6:50 AM and therefore don't need a permit.) Since that time, I have run Permitter daily on my [Windows PC](https://www.intel.com/content/www/us/en/products/boards-kits/nuc.html) using [Task Scheduler](https://docs.microsoft.com/en-us/windows/desktop/taskschd/task-scheduler-start-page). Five days a week, new permits magically appear in her Select-a-Spot account.
+Parking permits for the Orinda BART parking lot sell out sixty days in advance, by 7:00 AM. In early 2018, I developed Permitter on a now-retired [MacBook Pro](https://motherboard.vice.com/en_us/article/53db3a/the-2012-non-retina-macbook-pro-is-still-the-best-laptop-apple-sells) to automate parking-permit purchases for my wife. From then until March, 2020, I ran Permitter daily on my [Windows PC](https://www.intel.com/content/www/us/en/products/boards-kits/nuc.html) using [Task Scheduler](https://docs.microsoft.com/en-us/windows/desktop/taskschd/task-scheduler-start-page). Five days a week, new permits magically appeared in my wife's Select-a-Spot account.
 
 The Permitter stack includes Java, IntelliJ, Selenium WebDriver, and Firefox. I used [Katalon Automation Recorder](https://www.katalon.com/resources-center/blog/katalon-automation-recorder/) to observe interactions with the parking-website DOM. I strongly endorse that product.
 
@@ -31,7 +31,7 @@ Permitter has three optional launch arguments:
 
 Permitter's repo has the MacOS Firefox Selenium WebDriver, `geckodriver`, but for other operating systems or browsers, use the appropriate driver. For example, if you are running Firefox on Windows, replace the string `geckodriver` in `Permitter.java` with `geckodriver.exe`.
 
-As of April 6, 2019, Permitter is known to work with the following versions:
+As of April 6, 2019, Permitter worked with the following versions:
 
 * IntelliJ IDEA: 2019.1
 * JDK: 8, Update 201
@@ -47,12 +47,6 @@ As of April 6, 2019, Permitter is known to work with the following versions:
 
 The Safari and Chrome Selenium WebDrivers did not work for me, which is why I used the Firefox Selenium WebDriver. YMMV.
 
-In my initial efforts to solve the purchasing problem, I tried [Permitter](https://github.com/jeffkowalski/permitter), a Ruby app. I ultimately decided to implement something else because I am not fond of Ruby's syntax. That said, I thank [Permitter](https://github.com/jeffkowalski/permitter)'s developer, Jeff Kowalski, for demonstrating that this automation is possible.
+In my initial efforts to solve the purchasing problem, I tried [Permitter](https://github.com/jeffkowalski/permitter), a Ruby app. I ultimately decided to implement something else because I am not fond of Ruby's `unless` keyword. That said, I thank [Permitter](https://github.com/jeffkowalski/permitter)'s developer, Jeff Kowalski, for demonstrating that this automation is possible.
 
 As a Swift developer, I was inclined to use [WKZombie](https://github.com/mkoehnke/WKZombie), but I could not get forms to work, perhaps because of this [issue](https://github.com/mkoehnke/WKZombie/issues/76).
-
-### Future Plans
-
-The credentials-reading code assumes that the credentials do not contain a comma. If my wife's credentials ever gain a comma, I might use XML for the credentials file, which would allow a comma.
-
-Results of attempts to purchase permits currently go to a log file. Successfully purchased permits are also stored in BART's backend. For more-timely notice of results, however, I would like to send a push notification.
